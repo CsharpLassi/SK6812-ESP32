@@ -27,6 +27,8 @@ void initServer()
 
 void serverTask(void *pvParams)
 {
+  initServer();
+
   while (true)
   {
     WiFiClient client = server.available();
@@ -62,16 +64,20 @@ void serverTask(void *pvParams)
           client.println("Content-type:text/html");
           client.println();
 
-          client.print(" <a href=\"/H\">Click here to to turn the LED on pin 5 on.</a><br>");
-          client.print(" <a href=\"/L\">Click here to to turn the LED on pin 5 off.</a><br>");
-          client.print(" <a href=\"/RGB\">Click here to to RGB.</a><br>");
-          client.print(" <a href=\"/STROBO\">Click here to to STROBO.</a><br>");
-          client.print(" <a href=\"/WANDER\">Click here to to turn WANDER.</a><br>");
-          client.print(" <a href=\"/rgbwander\">Click here to to turn RGBWANDER.</a><br>");
-          client.print(" <a href=\"/rgbcycle\">Click here to to turn RGBCYCLE.</a><br>");
-          client.print(" <a href=\"/single\">Click here to to turn USERCOLOR.</a><br>");
-          client.print(" <a href=\"/reverse\">Click here to to turn REVERSE.</a><br>");
-          client.print(" <a href=\"/OFF\">Click here to  to turn OFF.</a><br>");
+
+          client.print(" <a href=\"/on\">On</a><br />");
+          client.print(" <a href=\"/off\">Off</a><br />");
+
+          //client.print(" <a href=\"/H\">Click here to to turn the LED on pin 5 on.</a><br>");
+          //client.print(" <a href=\"/L\">Click here to to turn the LED on pin 5 off.</a><br>");
+          //client.print(" <a href=\"/RGB\">Click here to to RGB.</a><br>");
+          //client.print(" <a href=\"/STROBO\">Click here to to STROBO.</a><br>");
+          //client.print(" <a href=\"/WANDER\">Click here to to turn WANDER.</a><br>");
+          //client.print(" <a href=\"/rgbwander\">Click here to to turn RGBWANDER.</a><br>");
+          //client.print(" <a href=\"/rgbcycle\">Click here to to turn RGBCYCLE.</a><br>");
+          //client.print(" <a href=\"/single\">Click here to to turn USERCOLOR.</a><br>");
+          //client.print(" <a href=\"/reverse\">Click here to to turn REVERSE.</a><br>");
+          //client.print(" <a href=\"/OFF\">Click here to  to turn OFF.</a><br>");
 
           client.println();
 
@@ -79,39 +85,13 @@ void serverTask(void *pvParams)
 
           String header = u.Path.c_str();
 
-          if (header == "/options")
+          if (header == "/on")
           {
-          }
-          else if (header == "/h")
-          {
-          }
-          else if (header == "/l")
-          {
-          }
-          else if (header == "/rgb")
-          {
-          }
-          else if (header == "/strobo")
-          {
-          }
-          else if (header == "/wander")
-          {
-          }
-          else if (header == "/reverse")
-          {
-          }
-          else if (header == "/rgbwander")
-          {
-          }
-          else if (header == "/rgbcycle")
-          {
-          }
-          else if (header == "/single")
-          {
-
+            setOn();
           }
           else if (header == "/off")
           {
+            setOff();
           }
 
           break;
