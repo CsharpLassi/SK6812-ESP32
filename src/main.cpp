@@ -1,4 +1,7 @@
+#include "config.h"
+
 #include "esp32_digital_led_lib.h"
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <ArduinoOTA.h>
@@ -9,14 +12,13 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-const char *ssid = "";
-const char *password = "";
 
-WiFiServer server(80);
 
-const int numberOfLeds = 94;
+WiFiServer server(server_port);
 
-strand_t pStrand = {.rmtChannel = 0, .gpioNum = 4, .ledType = LED_SK6812W_V1, .brightLimit = 255, .numPixels = numberOfLeds, .pixels = nullptr, ._stateVars = nullptr};
+using namespace std;
+
+
 
 int stepper = 0;
 int colord = 0;
@@ -279,6 +281,7 @@ void ledStripUpdateTask(void *pvParams)
     digitalLeds_updatePixels(&pStrand);
   }
 }
+
 void wifiServerTask(void *pvParams)
 {
   while (true)

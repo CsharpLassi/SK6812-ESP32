@@ -1,3 +1,6 @@
+#ifndef __URI_PARSER_H__
+#define __URI_PARSER_H__
+
 #include <string>
 #include <algorithm>    
 
@@ -68,3 +71,5 @@ static Uri Parse(const std::string &uri)
 
 }   // Parse
 };  // uri
+
+#endif

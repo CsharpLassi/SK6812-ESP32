@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.env.linux": {
+        "PATH": "/home/lassi/.platformio/penv/bin:/home/lassi/.platformio/penv:/home/lassi/bin:/home/lassi/.local/bin:/home/lassi/adb-fastboot/platform-tools:/home/lassi/bin:/home/lassi/.local/bin:/home/lassi/adb-fastboot/platform-tools:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+        "PLATFORMIO_CALLER": "vscode"
+    }
+}
