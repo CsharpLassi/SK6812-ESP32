@@ -44,9 +44,9 @@ pixelColor_t pixelColor;
 pixelColor_t pixelColorBrightness;
 uint8_t userBrightness = 120;
 
-std::vector<std::tuple<String, uint32_t>> getParams(std::string s)
+vector<tuple<String, uint32_t>> getParams(string s)
 {
-  std::vector<std::tuple<String, uint32_t>> params;
+  vector<tuple<String, uint32_t>> params;
   int locInStr = 0;
   int locInStr2 = 0;
   
@@ -68,11 +68,11 @@ std::vector<std::tuple<String, uint32_t>> getParams(std::string s)
     String strVal = str.substring(locInStr + 1, locInStr2);
 
     if(strVal[0] == 'x')
-      val = std::strtoul(strVal.substring(1).c_str(), NULL, 16);
+      val = strtoul(strVal.substring(1).c_str(), NULL, 16);
     else
-      val = std::strtoul(strVal.c_str(), NULL, 10);
+      val = strtoul(strVal.c_str(), NULL, 10);
     
-    params.push_back(std::make_tuple(paramName, val));
+    params.push_back(make_tuple(paramName, val));
   }
   return params;
 }
@@ -101,9 +101,9 @@ void stepMethod(uint8_t stepSize = 1)
   step = (step + numberOfLeds) % numberOfLeds;
 }
 
-std::vector<uint8_t> transferBetweenTwoColors(uint8_t numPixels, uint8_t offset)
+vector<uint8_t> transferBetweenTwoColors(uint8_t numPixels, uint8_t offset)
 {
-  std::vector<uint8_t> ret;
+  vector<uint8_t> ret;
   ret.push_back((255 - ((255 / numPixels) * offset)));
   ret.push_back(0 + ((255 / numPixels) * offset));
   return ret;
@@ -114,7 +114,7 @@ void rgbWander()
   uint8_t y;
   for (uint8_t i = 0; i < numberOfLeds - (numberOfLeds % 3); i++)
   {
-    std::vector<uint8_t> colors = transferBetweenTwoColors(numberOfLeds / 3, (i % (numberOfLeds / 3)) + 1);
+    vector<uint8_t> colors = transferBetweenTwoColors(numberOfLeds / 3, (i % (numberOfLeds / 3)) + 1);
     y = (i + step) % numberOfLeds;
     if (i < numberOfLeds / 3)
     {
@@ -290,12 +290,12 @@ void wifiServerTask(void *pvParams)
 
     if (client)
     {
-      std::string currentLine = "";
+      string currentLine = "";
       while (client.connected())
       {
         if (client.available())
         {
-          std::string request = "";
+          string request = "";
           char c = ' ';
           for (int i = 0; i < 4; i++)
             client.read();
@@ -313,7 +313,7 @@ void wifiServerTask(void *pvParams)
             request += c;
           }
           //Serial.print(request + "|" + request.length());
-          std::transform(request.begin(), request.end(), request.begin(), ::tolower);
+          transform(request.begin(), request.end(), request.begin(), ::tolower);
 
           client.println("HTTP/1.1 200 OK");
           client.println("Content-type:text/html");
@@ -339,19 +339,19 @@ void wifiServerTask(void *pvParams)
           {
             if (u.QueryString.length() > 0)
             {
-              std::vector<std::tuple<String, uint32_t>> strArr = getParams(u.QueryString);
+              vector<tuple<String, uint32_t>> strArr = getParams(u.QueryString);
               String s;
-              for (std::vector<std::tuple<String, uint32_t>>::iterator it = strArr.begin(); it != strArr.end(); ++it)
+              for (vector<tuple<String, uint32_t>>::iterator it = strArr.begin(); it != strArr.end(); ++it)
               {
-                s = std::get<0>(*it);
+                s = get<0>(*it);
                 if (s == "delay")
-                  userDelay = std::get<1>(*it);
+                  userDelay = get<1>(*it);
                 else if (s == "brightness")
-                  userBrightness = std::get<1>(*it);
+                  userBrightness = get<1>(*it);
                 else if (s == "rbrightness")
-                  userBrightness = (uint16_t)userBrightness * (100 + (int32_t)std::get<1>(*it)) / 100;
+                  userBrightness = (uint16_t)userBrightness * (100 + (int32_t)get<1>(*it)) / 100;
                 else if (s == "color")
-                  userColor = std::get<1>(*it);
+                  userColor = get<1>(*it);
               }
             }
           }
