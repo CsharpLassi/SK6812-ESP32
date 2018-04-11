@@ -107,7 +107,7 @@ const ledParams_t ledParamsAll[] = {  // Still must match order of `led_types`
   [LED_WS2813_V3]  = { .bytesPerPixel = 3, .T0H = 270, .T1H = 630, .T0L = 630, .T1L = 270, .TRS = 300000}, // 2017-05 WS datasheet
   [LED_SK6812_V1]  = { .bytesPerPixel = 3, .T0H = 300, .T1H = 600, .T0L = 900, .T1L = 600, .TRS =  80000},
   [LED_SK6812W_V1] = { .bytesPerPixel = 4, .T0H = 300, .T1H = 600, .T0L = 900, .T1L = 600, .TRS =  80000},
-  [CUSTOM]  = { .bytesPerPixel = 3, .T0H = 370, .T1H = 720, .T0L = 820, .T1L = 620, .TRS =  60000},
+  [CUSTOM]  = { .bytesPerPixel = 3, .T0H = 380, .T1H = 740, .T0L = 840, .T1L = 640, .TRS =  60000},
 };
 
 extern int digitalLeds_initStrands(strand_t strands [], int numStrands);

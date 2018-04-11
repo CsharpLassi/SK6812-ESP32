@@ -22,7 +22,7 @@ const char *ssid = "FernFeldFunkerII";
 const char *password = "sin(x)/x";
 const uint16_t server_port = 80;
 
-const uint8_t numberOfLeds = 60;
+const uint8_t numberOfLeds = 100;
 const uint8_t pinNum = 4;
 
 const uint8_t brightLimit = 255;
