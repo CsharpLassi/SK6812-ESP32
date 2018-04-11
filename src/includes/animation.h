@@ -4,34 +4,31 @@
 #include "esp32_digital_led_lib.h"
 
 #include <stdint.h>
+#include <led_color.h>
 
-typedef struct
+struct settings
 {
-  uint8_t red;
-  uint8_t green;
-  uint8_t blue;
-
-  uint8_t white;
-} pixelColor;
+  rgbwColor backgroundColor;
+};
 
 class animation
 {
   public:
-    virtual void drawNext(strand_t* pStrand);
+    virtual void drawNext(strand_t*, settings*, bool* interrupt);
 };
 
 class onAnimation : public animation
 {
   public:
     uint16_t ledDelay = 0;
-    void drawNext(strand_t* pStrand);
+
+    void drawNext(strand_t*, settings*, bool* interrupt);
 };
 
 class offAnimation : public animation
 {
   public:
-    uint16_t ledDelay = 0;
-    void drawNext(strand_t* pStrand);
+    void drawNext(strand_t*, settings*, bool* interrupt);
 };
 
 

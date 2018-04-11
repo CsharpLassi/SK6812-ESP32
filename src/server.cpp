@@ -1,9 +1,11 @@
-#include "includes/server.h"
-#include "includes/led_strip.h"
+#include <server.h>
+#include <led_strip.h>
+#include <led_color.h>
+
+#include <html/pages.h>
 
 #include <WiFi.h>
 #include <uri_parser.h>
-#include <string.h>
 #include <vector>
 #include <tuple>
 #include <inttypes.h>
@@ -12,6 +14,8 @@
 using namespace std;
 
 WiFiServer server(server_port);
+
+vector<tuple<String, String>> getParams(string s);
 
 void initServer()
 {
@@ -64,35 +68,60 @@ void serverTask(void *pvParams)
           client.println("Content-type:text/html");
           client.println();
 
-
-          client.print(" <a href=\"/on\">On</a><br />");
-          client.print(" <a href=\"/off\">Off</a><br />");
-
-          //client.print(" <a href=\"/H\">Click here to to turn the LED on pin 5 on.</a><br>");
-          //client.print(" <a href=\"/L\">Click here to to turn the LED on pin 5 off.</a><br>");
-          //client.print(" <a href=\"/RGB\">Click here to to RGB.</a><br>");
-          //client.print(" <a href=\"/STROBO\">Click here to to STROBO.</a><br>");
-          //client.print(" <a href=\"/WANDER\">Click here to to turn WANDER.</a><br>");
-          //client.print(" <a href=\"/rgbwander\">Click here to to turn RGBWANDER.</a><br>");
-          //client.print(" <a href=\"/rgbcycle\">Click here to to turn RGBCYCLE.</a><br>");
-          //client.print(" <a href=\"/single\">Click here to to turn USERCOLOR.</a><br>");
-          //client.print(" <a href=\"/reverse\">Click here to to turn REVERSE.</a><br>");
-          //client.print(" <a href=\"/OFF\">Click here to  to turn OFF.</a><br>");
-
-          client.println();
-
           Uri u = Uri::Parse(request);
 
           String header = u.Path.c_str();
 
-          if (header == "/on")
+          bool backgroundColorIsSet = false;
+          rgbwColor backgroundColor;
+
+          if (u.QueryString.length() > 0)
           {
-            setOn();
+            vector<tuple<String, String>> strArr = getParams(u.QueryString);
+            String s;
+            for (vector<tuple<String, String>>::iterator it = strArr.begin(); it != strArr.end(); ++it)
+            {
+              s = get<0>(*it);
+              client.println(s);
+              if (s == "backgroundcolor")
+              {
+                String rawColor = get<1>(*it);
+                backgroundColor = parseColor(rawColor);
+                backgroundColorIsSet = true;
+              }
+            }
+          }
+
+          if (header == "/index")
+          {
+            client.print(indexPage);;
+          }
+          else if (header == "/option")
+          {
+            if (backgroundColorIsSet)
+              setBackgroundColor(backgroundColor);
+            client.print(redirectPage);
+          }
+          else if (header == "/on")
+          {
+            if (backgroundColorIsSet)
+              setOn(backgroundColor);
+            else
+              setOn();
+
+            client.print(redirectPage);
           }
           else if (header == "/off")
           {
             setOff();
+            client.print(redirectPage);
           }
+          else
+          {
+            //client.print(indexPage);
+          }
+
+          client.println();
 
           break;
         }
@@ -102,9 +131,9 @@ void serverTask(void *pvParams)
   }
 }
 
-vector<tuple<String, uint32_t>> getParams(string s)
+vector<tuple<String, String>> getParams(string s)
 {
-vector<tuple<String, uint32_t>> params;
+vector<tuple<String, String>> params;
 int locInStr = 0;
 int locInStr2 = 0;
 
@@ -122,15 +151,18 @@ while (true)
   if (locInStr2 == -1)
     locInStr2 = str.length();
 
-  uint32_t val;
+
   String strVal = str.substring(locInStr + 1, locInStr2);
 
+  params.push_back(make_tuple(paramName, strVal));
+  /*
+  uint32_t val;
   if(strVal[0] == 'x')
     val = strtoul(strVal.substring(1).c_str(), NULL, 16);
   else
     val = strtoul(strVal.c_str(), NULL, 10);
+  */
 
-  params.push_back(make_tuple(paramName, val));
 }
 return params;
 }

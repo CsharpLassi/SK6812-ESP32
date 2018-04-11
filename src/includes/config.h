@@ -25,7 +25,7 @@ const uint16_t server_port = 80;
 const uint8_t numberOfLeds = 100;
 const uint8_t pinNum = 4;
 
-const uint8_t brightLimit = 255;
+const uint8_t brightLimit = 80;
 
 strand_t pStrand = {.rmtChannel = 0, .gpioNum = pinNum, .ledType = CUSTOM, .brightLimit = brightLimit, .numPixels = numberOfLeds, .pixels = nullptr, ._stateVars = nullptr};
 

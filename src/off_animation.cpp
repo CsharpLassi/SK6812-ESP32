@@ -4,7 +4,7 @@
 
 #include "esp32_digital_led_lib.h"
 
-void offAnimation::drawNext(strand_t *pStrand)
+void offAnimation::drawNext(strand_t *pStrand, settings* settings,bool* interrupt)
 {
   digitalLeds_resetPixels(pStrand);
 }

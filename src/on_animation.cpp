@@ -4,13 +4,26 @@
 
 #include "esp32_digital_led_lib.h"
 
-void onAnimation::drawNext(strand_t *pStrand)
+void onAnimation::drawNext(strand_t *pStrand,settings* settings,bool* interrupt)
 {
+  rgbwColor showColor = settings->backgroundColor;
+
   for (uint8_t i = 0; i < numberOfLeds; i++)
   {
-    pStrand->pixels[i] = pixelFromRGB(255>>4,143>>6,197>>6);
+    pStrand->pixels[i] = createPWMColor(showColor);
 
     digitalLeds_updatePixels(pStrand);
     delay(ledDelay);
+  }
+
+  while (!(*interrupt))
+  {
+    showColor = settings->backgroundColor;
+    for (uint8_t i = 0; i < numberOfLeds; i++)
+    {
+      pStrand->pixels[i] = createPWMColor(showColor);
+    }
+    digitalLeds_updatePixels(pStrand);
+    delay(10);
   }
 }

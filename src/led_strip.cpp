@@ -5,6 +5,8 @@
 #include <Arduino.h>
 
 static animation* currentAnimation = NULL;
+static settings currentSettings;
+static bool interrupt = false;
 
 
 void initLedStrip()
@@ -39,9 +41,22 @@ void ledStripUpdateTask(void *pvParams)
       continue;
     }
 
-    currentAnimation->drawNext(&pStrand);
+    currentAnimation->drawNext(&pStrand, &currentSettings, &interrupt);
     currentAnimation = NULL;
+    interrupt = false;
   }
+}
+
+void setAnimation(animation* newAnimation)
+{
+  if (currentAnimation != NULL)
+  {
+    interrupt = true;
+    while (interrupt)
+      delay(10);
+  }
+
+  currentAnimation = newAnimation;
 }
 
 void setOn()
@@ -50,16 +65,28 @@ void setOn()
   animation.ledDelay = 100;
 
 
+  setAnimation(&animation);
+}
 
-  currentAnimation = &animation;
+void setOn(rgbwColor color)
+{
+  static onAnimation animation;
+  animation.ledDelay = 100;
+
+  setBackgroundColor(color);
+
+
+  setAnimation(&animation);
 }
 
 void setOff()
 {
   static offAnimation animation;
-  animation.ledDelay = 100;
 
+  setAnimation(&animation);
+}
 
-
-  currentAnimation = &animation;
+void setBackgroundColor(rgbwColor color)
+{
+  currentSettings.backgroundColor = color;
 }
