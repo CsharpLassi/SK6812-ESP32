@@ -5,6 +5,9 @@
 
 using namespace std;
 
+const float piOver6 = 0.5235987755982988;
+const float pi = 3.141592653589793;
+
 rgbwColor parseColor(String strValue)
 {
 
@@ -23,39 +26,146 @@ rgbwColor parseColor(String strValue)
   return output;
 }
 
+hsvwColor convertToHSV(rgbwColor color)
+{
+  hsvwColor newColor;
+  newColor.w = color.w;
+
+  float r = color.r /(float)255;
+  float g = color.g /(float)255;
+  float b = color.b /(float)255;
+
+  float max = r;
+  float min = r;
+  uint8_t maxColor = 0;
+
+  if (g > max)
+  {
+    maxColor = 1;
+    max = g;
+  }
+  if(g < min)
+  {
+    min = g;
+  }
+
+  if (b > max)
+  {
+    maxColor = 2;
+    max = b;
+  }
+  if(b < min)
+  {
+    min = b;
+  }
+
+  float delta = max -min;
+
+  if (delta == 0)
+    newColor.h = 0;
+  else if(maxColor == 0 )
+    newColor.h = piOver6 * (0+(g-b)/(delta));
+  else if(maxColor == 1 )
+    newColor.h = piOver6 * (2+(b-r)/(delta));
+  else if(maxColor == 2 )
+    newColor.h = piOver6 * (4+(r-g)/(delta));
+
+  if(newColor.h < 0)
+    newColor.h += pi;
+
+  if (max == 0)
+    newColor.s = 0;
+  else
+    newColor.s = delta/max;
+
+  newColor.v = max;
+
+  return newColor;
+}
+
 pixelColor_t createPWMColor(rgbwColor color)
 {
+  hsvwColor hsvValue = convertToHSV(color);
   pixelColor_t pwmColor;
 
-  uint8_t maxValue = 0;
-  if (color.r > maxValue)
-    maxValue = color.r;
+  float h = hsvValue.h;
+  float s = hsvValue.s;
+  float v = hsvValue.v;
 
-  if (color.g > maxValue)
-    maxValue = color.g;
+  if(v > (maxBrightness/(float)255))
+    v =  maxBrightness/(float)255;
 
-  if (color.b > maxValue)
-    maxValue = color.b;
+  //v = 0.01;
 
-  if (maxValue == 0)
-    return pwmColor;
+  uint8_t hi = (uint16_t) (h / piOver6);
 
-  float fac = (float)brightLimit/maxValue;
+  float f = (h / piOver6) - hi;
 
-  if (fac < 1)
+  float p = v *(1-s);
+  float q = v *(1-s*f);
+  float t = v *(1-s*(1-f));
+
+  float r;
+  float g;
+  float b;
+
+
+  if(hi == 0 || hi == 6)
   {
-    pwmColor.r = color.r*fac;
-    pwmColor.g = color.g*fac;
-    pwmColor.b = color.b*fac;
+    r = v;
+    g = t;
+    b = p;
   }
-  else
+  else if (hi==1)
   {
-    pwmColor.r = color.r;
-    pwmColor.g = color.g;
-    pwmColor.b = color.b;
+    r = q;
+    g = v;
+    b = p;
+  }
+  else if (hi==2)
+  {
+    r = p;
+    g = v;
+    b = t;
+  }
+  else if (hi==3)
+  {
+    r = p;
+    g = q;
+    b = v;
+  }
+  else if (hi==4)
+  {
+    r = t;
+    g = p;
+    b = v;
+  }
+  else if (hi==5)
+  {
+    r = v;
+    g = p;
+    b = q;
   }
 
+  uint8_t br = (uint8_t)(r*255);
+  uint8_t bg = (uint8_t)(g*255);
+  uint8_t bb = (uint8_t)(b*255);
 
+  switch (order)
+  {
+      case rgb:
+        return pixelFromRGB(br,bg,bb);
+      case rbg:
+        return pixelFromRGB(br,bb,bg);
+      case gbr:
+        return pixelFromRGB(bg,bb,br);
+      case grb:
+        return pixelFromRGB(bg,br,bb);
+      case brg:
+        return pixelFromRGB(bb,br,bg);
+      case bgr:
+        return pixelFromRGB(bb,bg,br);
+  }
 
-  return pwmColor;
+  return pixelFromRGB(br,bg,bb);
 }

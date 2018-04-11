@@ -16,17 +16,15 @@ void setup()
   pinMode(22, OUTPUT);
   digitalWrite(22, LOW);
 
-  uint8_t core = (xPortGetCoreID() +1 )%2;
-/*
+
   xTaskCreatePinnedToCore(
       ledStripUpdateTask,   // Function to implement the task
       "ledStripUpdateTask", // Name of the task
       10000,                // Stack size in words
       NULL,                // Task input parameter
-      1,                   // Priority of the task
+      2,                   // Priority of the task
       NULL,                // Task handle.
-      core);                  // Core where the task should run
-*/
+      0);                  // Core where the task should run
 
   xTaskCreatePinnedToCore(
       serverTask,   // Function to implement the task
@@ -35,13 +33,14 @@ void setup()
       NULL,             // Task input parameter
       1,                // Priority of the task
       NULL,             // Task handle.
-      core);               // Core where the task should run
+      0);               // Core where the task should run
 
 
 
 
   ArduinoOTA.setHostname("SK6812 ESP");
   ArduinoOTA.setPasswordHash("");
+  ArduinoOTA.setPort(3232);
 
   ArduinoOTA
       .onStart([]() {
@@ -65,7 +64,7 @@ void setup()
 
 void loop()
 {
-  ledStripUpdateTask(NULL);
-  //ArduinoOTA.handle();
-  //delay(200);
+  //ledStripUpdateTask(NULL);
+  ArduinoOTA.handle();
+  delay(200);
 }

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <WString.h>
+#include <rgb_order.h>
 
 #include "esp32_digital_led_lib.h"
 
@@ -17,7 +18,17 @@ struct rgbwColor
   uint8_t w;
 };
 
-extern const uint8_t brightLimit;
+struct hsvwColor
+{
+  float h;
+  float s;
+  float v;
+
+  uint8_t w;
+};
+
+extern const rgb_order order;
+extern const uint8_t maxBrightness;
 
 rgbwColor parseColor(String strValue);
 

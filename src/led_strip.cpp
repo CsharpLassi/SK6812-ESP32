@@ -40,8 +40,9 @@ void ledStripUpdateTask(void *pvParams)
       delay(10);
       continue;
     }
-
+    currentAnimation->start();
     currentAnimation->drawNext(&pStrand, &currentSettings, &interrupt);
+    currentAnimation->end();
     currentAnimation = NULL;
     interrupt = false;
   }
@@ -62,7 +63,7 @@ void setAnimation(animation* newAnimation)
 void setOn()
 {
   static onAnimation animation;
-  animation.ledDelay = 100;
+  animation.ledDelay = 10;
 
 
   setAnimation(&animation);
@@ -71,7 +72,7 @@ void setOn()
 void setOn(rgbwColor color)
 {
   static onAnimation animation;
-  animation.ledDelay = 100;
+  animation.ledDelay = 10;
 
   setBackgroundColor(color);
 
@@ -86,7 +87,27 @@ void setOff()
   setAnimation(&animation);
 }
 
+void startBarAnimation()
+{
+  static barAnimation animation;
+
+  setAnimation(&animation);
+}
+
+void startBarAnimation(rgbwColor color)
+{
+  static barAnimation animation;
+  animation.setForegroundColor(color);
+
+  setAnimation(&animation);
+}
+
 void setBackgroundColor(rgbwColor color)
 {
   currentSettings.backgroundColor = color;
+}
+
+void setForegroundColor(rgbwColor color)
+{
+  currentSettings.foregroundColor = color;
 }

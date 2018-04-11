@@ -72,8 +72,14 @@ void serverTask(void *pvParams)
 
           String header = u.Path.c_str();
 
+          bool colorIsSet = false;
+          rgbwColor color;
+
           bool backgroundColorIsSet = false;
           rgbwColor backgroundColor;
+
+          bool foregroundColorIsSet = false;
+          rgbwColor foregroundColor;
 
           if (u.QueryString.length() > 0)
           {
@@ -83,11 +89,23 @@ void serverTask(void *pvParams)
             {
               s = get<0>(*it);
               client.println(s);
-              if (s == "backgroundcolor")
+              if (s == "color")
+              {
+                String rawColor = get<1>(*it);
+                color = parseColor(rawColor);
+                colorIsSet = true;
+              }
+              else if (s == "backgroundcolor")
               {
                 String rawColor = get<1>(*it);
                 backgroundColor = parseColor(rawColor);
                 backgroundColorIsSet = true;
+              }
+              else if(s == "foregroundcolor")
+              {
+                String rawColor = get<1>(*it);
+                foregroundColor = parseColor(rawColor);
+                foregroundColorIsSet = true;
               }
             }
           }
@@ -100,11 +118,17 @@ void serverTask(void *pvParams)
           {
             if (backgroundColorIsSet)
               setBackgroundColor(backgroundColor);
+
+            if (foregroundColorIsSet)
+              setForegroundColor(foregroundColor);
+
             client.print(redirectPage);
           }
           else if (header == "/on")
           {
-            if (backgroundColorIsSet)
+            if (colorIsSet)
+              setOn(color);
+            else if (backgroundColorIsSet)
               setOn(backgroundColor);
             else
               setOn();
@@ -116,9 +140,17 @@ void serverTask(void *pvParams)
             setOff();
             client.print(redirectPage);
           }
+          else if (header == "/bar")
+          {
+            if(colorIsSet)
+              startBarAnimation(color);
+            else
+              startBarAnimation();
+            client.print(redirectPage);
+          }
           else
           {
-            //client.print(indexPage);
+            client.print(indexPage);
           }
 
           client.println();

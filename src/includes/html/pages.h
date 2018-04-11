@@ -16,10 +16,12 @@ const char *indexPage = " <html> \
                                         <div class=\"card-body\"> \
                                           <a href=\"/on\" class=\"nav-link\">On</a> \
                                           <a href=\"/off\" class=\"nav-link\">Off</a> \
+                                          <hr /> \
+                                          <a href=\"/bar\" class=\"nav-link\">Bar</a> \
                                         </div> \
                                       </div> \
                                     </div> \
-                                    <div class=\"col-sm-12 col-md-9\"> \
+                                    <div class=\"col-sm-12 col-md-3\"> \
                                       <div class=\"card\"> \
                                         <h4 class=\"card-header\">Background</h4>\
                                         <div class=\"card-body\"> \
@@ -27,6 +29,18 @@ const char *indexPage = " <html> \
                                             <div class=\"form-group\"> \
                                               <label for=\"backgroundColor\">Color:</label> \
                                               <input type=\"color\" class=\"form-control\" id=\"backgroundColor\" name=\"backgroundColor\" > \
+                                            </div> \
+                                            <button type=\"submit\" class=\"btn btn-primary\">Submit</button> \
+                                          </form> \
+                                        </div> \
+                                      </div> \
+                                      <div class=\"card\"> \
+                                        <h4 class=\"card-header\">Foreground</h4>\
+                                        <div class=\"card-body\"> \
+                                          <form action=\"/option\" method=\"get\"> \
+                                            <div class=\"form-group\"> \
+                                              <label for=\"foregroundColor\">Color:</label> \
+                                              <input type=\"color\" class=\"form-control\" id=\"foregroundColor\" name=\"foregroundColor\" > \
                                             </div> \
                                             <button type=\"submit\" class=\"btn btn-primary\">Submit</button> \
                                           </form> \

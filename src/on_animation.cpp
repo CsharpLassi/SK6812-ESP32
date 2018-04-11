@@ -19,10 +19,7 @@ void onAnimation::drawNext(strand_t *pStrand,settings* settings,bool* interrupt)
   while (!(*interrupt))
   {
     showColor = settings->backgroundColor;
-    for (uint8_t i = 0; i < numberOfLeds; i++)
-    {
-      pStrand->pixels[i] = createPWMColor(showColor);
-    }
+    cleanUp(pStrand,showColor);
     digitalLeds_updatePixels(pStrand);
     delay(10);
   }
